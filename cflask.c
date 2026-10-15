@@ -86,7 +86,7 @@ static void handle_client(int client_fd){
             free(response);
         }
 
-        printf("[thread %d] %s %s -> %s\n", (int)getpid(), req.request_line.method, req.request_line.uri, status);
+        printf("[thread %lu] %s %s -> %s\n", (unsigned long)pthread_self(), req.request_line.method, req.request_line.uri, status);
         fflush(stdout);
 
         //close client socket fd
