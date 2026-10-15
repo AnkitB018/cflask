@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 #include "http-parser.h"
 #include "functions.h"
@@ -30,6 +31,9 @@ static const Route routes[] = {
     {"/pingpong", URL_PINGPONG}
 };
 
+#define ROUTE_COUNT (sizeof(routes) / sizeof(routes[0]))
+
+
 static int find_route(const char* url){
     for(int i=0 ; i<URL_COUNT ; i++){
         if(strcmp(url, routes[i].url) == 0){
@@ -40,62 +44,13 @@ static int find_route(const char* url){
     return -1;
 }
 
-int main(int argc, char *argv[]){
-    if(argc != 3 || strcmp(argv[1], "s") != 0){
-        fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
-        return 1;
-    }
-
-    char *end;
-    long port = strtol(argv[2], &end, 10);
-
-    if (*argv[2] == '\0' || *end != '\0' || port < 1 || port > 65535) {
-        fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
-        return 1;
-    }
-
-    //create socket
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if(server_fd < 0){
-        perror("socket");
-        return 1;
-    }
-
-    //bind socket to port
-    struct sockaddr_in addr = {0};
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons((unsigned short)port);
-
-    if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("bind");
-        close(server_fd);
-        return 1;
-    }
-
-    //Listen for connections
-    if(listen(server_fd, 10) < 0){
-        perror("listen");
-        close(server_fd);
-        return 1;
-    }
-
-    printf("cflask [single-threaded] on [http://0.0.0.0:%ld]\n", port);
-    fflush(stdout);
-
-    while(1){
-        int client_fd = accept(server_fd,  NULL, NULL);
-        if(client_fd < 0){
-            continue;
-        }
-
-        //receive request
-        char request[8192];
+static void handle_client(int client_fd){
+    char request[8192];
         ssize_t n = recv(client_fd, request, sizeof(request)-1, 0);
 
         if(n<=0){
             close(client_fd);
-            continue;
+            return;
         }
 
         request[n] = '\0';
@@ -136,8 +91,93 @@ int main(int argc, char *argv[]){
 
         //close client socket fd
         close(client_fd);
+}
 
 
+static void *worker(void *args){
+    int client_fd = *(int *)args;
+    free(args);
+
+    handle_client(client_fd);
+
+    return NULL;
+}
+
+int main(int argc, char *argv[]){
+    if(argc != 3 || (strcmp(argv[1], "s") != 0 && strcmp(argv[1], "m") != 0 )){
+        fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
+        return 1;
+    }
+
+    char *end;
+    long port = strtol(argv[2], &end, 10);
+
+    if (*argv[2] == '\0' || *end != '\0' || port < 1 || port > 65535) {
+        fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
+        return 1;
+    }
+
+    //create socket
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(server_fd < 0){
+        perror("socket");
+        return 1;
+    }
+
+    //bind socket to port
+    struct sockaddr_in addr = {0};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_port = htons((unsigned short)port);
+
+    if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        perror("bind");
+        close(server_fd);
+        return 1;
+    }
+
+    //Listen for connections
+    if(listen(server_fd, 10) < 0){
+        perror("listen");
+        close(server_fd);
+        return 1;
+    }
+
+    if(strcmp(argv[1], "s") == 0){
+        printf("cflask [single-threaded] on [http://0.0.0.0:%ld]\n", port);
+    }else{
+        printf("cflask [multi-threaded] on [http://0.0.0.0:%ld]\n", port);
+    }
+    
+    fflush(stdout);
+
+    while(1){
+        int client_fd = accept(server_fd,  NULL, NULL);
+        if(client_fd < 0){
+            continue;
+        }
+
+        if(strcmp(argv[1], "s") == 0){
+            handle_client(client_fd);
+        }else{
+            //multi-threading, give this connection to a new thread
+            int *arg = malloc(sizeof(int));
+            if(arg == NULL){
+                close(client_fd);
+                continue;
+            }
+            *arg = client_fd;
+
+            pthread_t thread;
+            if(pthread_create(&thread, NULL, worker, arg) != 0){
+                close(client_fd);
+                free(arg);
+                continue;
+            }
+
+            pthread_detach(thread);
+        }
+        
     }
 
     close(server_fd);

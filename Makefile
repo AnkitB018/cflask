@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -pthread
 TARGET = bin/cflask
 SRCS = cflask.c http-parser.c functions.c
 
