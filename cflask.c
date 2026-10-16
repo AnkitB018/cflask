@@ -85,6 +85,41 @@ static int find_route(const char* url){
     return -1;
 }
 
+int get_arguement(const char *query, const char *name, char *value, size_t value_size){
+    const char* p =query;
+    size_t name_len = strlen(name);
+
+    while(*p){
+        const char *equal = strchr(p, "=");
+        if(equal == NULL){
+            break;
+        }
+        const char *amp = strchr(p, "&");
+        if(amp == NULL){
+            amp = p + strlen(p);
+        }
+
+        if(equal < amp && (size_t)(equal-p) == name_len && strncmp(p, name, name_len) == 0){
+            size_t len = (size_t)(amp-equal-1);
+
+            if(len > value_size){
+                len = value_size-1;
+            }
+
+            memcpy(value, equal+1, len);
+            value[len] = '\0';
+            return 1;
+        }
+        if(*amp == '\0'){
+            break;
+        }
+        p = amp+1;
+    }
+
+    value[0] = '\0';
+    return 0;
+}
+
 
 static void handle_client(int client_fd){
     char request[8192];
@@ -194,7 +229,7 @@ int main(int argc, char *argv[]){
     }
 
 
-    // ------------------------ START of base creation (socket, bind, create) ------------------------
+    // ----------------------------- START of base creation (socket, bind, create) -----------------------------
 
     //create socket
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -222,7 +257,7 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    // ------------------------ END of base creation (socket, bind, create) ------------------------
+    // ----------------------------- END of base creation (socket, bind, create) -----------------------------
 
 
 
