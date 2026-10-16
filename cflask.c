@@ -18,6 +18,47 @@
 * 5. process, generate and send http responses
 */
 
+
+//adding a requests queue
+#define QUEUE_SIZE 10
+int queue[QUEUE_SIZE];
+int front = 0, rear = 0, count =0;
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t not_empty = PTHREAD_COND_INITIALIZER;
+pthread_cond_t not_full = PTHREAD_COND_INITIALIZER;
+
+void enqueue(int client_fd){
+    pthread_mutex_lock(&mutex);
+
+    while(count == QUEUE_SIZE){
+        pthread_cond_wait(&not_full, &mutex);
+    }
+
+    queue[rear] = client_fd;
+    rear = (rear+1) % QUEUE_SIZE;
+    count++;
+    pthread_cond_signal(&not_empty);
+    pthread_mutex_unlock(&mutex);
+}
+
+int dequeue(void){
+    pthread_mutex_lock(&mutex);
+
+    while(count ==0){
+        pthread_cond_wait(&not_empty, &mutex);
+    }
+
+    int client_fd = queue[front];
+    front = (front +1) % QUEUE_SIZE;
+    count--;
+
+    pthread_cond_signal(&not_full);
+    pthread_mutex_unlock(&mutex);
+
+    return client_fd;
+}
+
 typedef struct {
     const char* url;
     int id;
@@ -43,6 +84,7 @@ static int find_route(const char* url){
 
     return -1;
 }
+
 
 static void handle_client(int client_fd){
     char request[8192];
@@ -94,6 +136,17 @@ static void handle_client(int client_fd){
 }
 
 
+static void *pool_worker(void *args){
+    (void)args;
+
+    while(1){
+        int client_fd = dequeue();
+        handle_client(client_fd);
+    }
+
+    return NULL;
+}
+
 static void *worker(void *args){
     int client_fd = *(int *)args;
     free(args);
@@ -104,11 +157,34 @@ static void *worker(void *args){
 }
 
 int main(int argc, char *argv[]){
-    if(argc != 3 || (strcmp(argv[1], "s") != 0 && strcmp(argv[1], "m") != 0 )){
-        fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
+    int fail = 0;
+
+    if (argc == 3) {
+        if (strcmp(argv[1], "s") != 0 && strcmp(argv[1], "m") != 0) {
+            fail = 1;
+        }
+    } else if (argc == 4) {
+        if (strcmp(argv[1], "t") != 0) {
+            fail = 1;
+        }
+    } else {
+        fail = 1;
+    }
+
+    if (fail) {
+        fprintf(stderr, "Usage: %s s <port> | %s m <port> | %s t <port> <num_threads>\n", argv[0], argv[0], argv[0]);
         return 1;
     }
 
+    int num_threads = 0;
+    if(strcmp(argv[1], "t") == 0){
+        num_threads = atoi(argv[3]);
+        if(num_threads > 256 || num_threads <1){
+            fprintf(stderr, "Number of threads must be between 1 to 256");
+            return 1;
+        }
+    }
+    
     char *end;
     long port = strtol(argv[2], &end, 10);
 
@@ -116,6 +192,9 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Usage: %s s <port>\n", argv[0]);
         return 1;
     }
+
+
+    // ------------------------ START of base creation (socket, bind, create) ------------------------
 
     //create socket
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -143,10 +222,24 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
+    // ------------------------ END of base creation (socket, bind, create) ------------------------
+
+
+
     if(strcmp(argv[1], "s") == 0){
-        printf("cflask [single-threaded] on [http://0.0.0.0:%ld]\n", port);
+        printf("cflask [single-threaded] on http://0.0.0.0:%ld\n", port);
+    }else if(strcmp(argv[1], "m") ==0){
+        printf("cflask [multi-threaded] on http://0.0.0.0:%ld\n", port);
     }else{
-        printf("cflask [multi-threaded] on [http://0.0.0.0:%ld]\n", port);
+        for(int i=0 ; i<num_threads; i++){
+            pthread_t thread;
+            if(pthread_create(&thread, NULL, pool_worker, NULL) != 0){
+                perror("pthread create");
+                close(server_fd);
+                return 1;
+            }
+        }
+        printf("cflask [thread-pool, %d threads] on http://0.0.0.0:%ld\n", num_threads, port);
     }
     
     fflush(stdout);
@@ -159,7 +252,7 @@ int main(int argc, char *argv[]){
 
         if(strcmp(argv[1], "s") == 0){
             handle_client(client_fd);
-        }else{
+        }else if(strcmp(argv[1], "m") == 0){
             //multi-threading, give this connection to a new thread
             int *arg = malloc(sizeof(int));
             if(arg == NULL){
@@ -176,6 +269,8 @@ int main(int argc, char *argv[]){
             }
 
             pthread_detach(thread);
+        }else{
+            enqueue(client_fd);
         }
         
     }
