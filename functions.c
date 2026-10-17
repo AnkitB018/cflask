@@ -4,14 +4,14 @@
 #include "functionslist.h"
 
 void root_handler(const char *arg, char *result, size_t result_size){
-    snprintf(result, result_size, "Root");
+    snprintf(result, result_size, "Hello World");
 }
 
 void square_handler(const char *arg, char *result, size_t result_size){
     char *end;
     long num = strtol(arg, &end, 10);
     if(arg[0] == '\0' || *end != '\0'){
-        snprintf(result, result_size, "Invalid number!");
+        snprintf(result, result_size, "1");
         return;
     }
 
@@ -22,7 +22,7 @@ void cube_handler(const char *arg, char *result, size_t result_size){
     char *end;
     long num = strtol(arg, &end, 10);
     if(arg[0] == '\0' || *end != '\0'){
-        snprintf(result, result_size, "Invalid number!");
+        snprintf(result, result_size, "1");
         return;
     }
 
@@ -34,7 +34,11 @@ void helloworld_handler(const char *arg, char *result, size_t result_size){
 }
 
 void pingpong_handler(const char *arg, char *result, size_t result_size){
-    snprintf(result, result_size, "Ping Pong");
+    if(arg[0] == '\0'){
+        snprintf(result, result_size, "Ping Pong");
+    }else{
+        snprintf(result, result_size, "%s", arg);
+    }
 }
 
 void prime(const char* arg, char* result, size_t result_size){
@@ -61,7 +65,7 @@ void fibonacci(const char* arg, char* result, size_t result_size){
     long num = strtol(arg, &end, 10);
 
     if (arg[0] == '\0' || *end != '\0' || num < 0 || num > 90) {
-        snprintf(result, result_size, "Invalid number");
+        snprintf(result, result_size, "1");
         return;
     }
 
