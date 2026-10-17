@@ -1,4 +1,4 @@
 #pragma once
 #include "functions.h"
 
-extern const char *(*functions[URL_COUNT])(void);
+extern void(*functions[URL_COUNT])(const char *arg, char *result, size_t result_size);

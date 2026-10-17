@@ -1,28 +1,44 @@
 #include "functions.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "functionslist.h"
 
-const char* root_handler(void){
-    return "Root";
+void root_handler(const char *arg, char *result, size_t result_size){
+    snprintf(result, result_size, "Root");
 }
 
-const char* square_handler(void){
-    return "1";
+void square_handler(const char *arg, char *result, size_t result_size){
+    char *end;
+    long num = strtol(arg, &end, 10);
+    if(arg[0] == '\0' || *end != '\0'){
+        snprintf(result, result_size, "Invalid number!");
+        return;
+    }
+
+    snprintf(result, result_size, "%ld", num*num);
 }
 
-const char* cube_handler(void){
-    return "1";
+void cube_handler(const char *arg, char *result, size_t result_size){
+    char *end;
+    long num = strtol(arg, &end, 10);
+    if(arg[0] == '\0' || *end != '\0'){
+        snprintf(result, result_size, "Invalid number!");
+        return;
+    }
+
+    snprintf(result, result_size, "%ld", num*num*num);
 }
 
-const char* helloworld_handler(void){
-    return "Hello world";
+void helloworld_handler(const char *arg, char *result, size_t result_size){
+    snprintf(result, result_size, "Hello %s", arg);
 }
 
-const char* pingpong_handler(void){
-    return "ping pong";
+void pingpong_handler(const char *arg, char *result, size_t result_size){
+    snprintf(result, result_size, "Ping Pong");
 }
 
 
-const char *(*functions[URL_COUNT])(void) = {
+void (*functions[URL_COUNT])(const char *arg, char *result, size_t result_size) = {
     root_handler,
     square_handler,
     cube_handler,

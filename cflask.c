@@ -90,11 +90,11 @@ int get_arguement(const char *query, const char *name, char *value, size_t value
     size_t name_len = strlen(name);
 
     while(*p){
-        const char *equal = strchr(p, "=");
+        const char *equal = strchr(p, '=');
         if(equal == NULL){
             break;
         }
-        const char *amp = strchr(p, "&");
+        const char *amp = strchr(p, '&');
         if(amp == NULL){
             amp = p + strlen(p);
         }
@@ -121,6 +121,8 @@ int get_arguement(const char *query, const char *name, char *value, size_t value
 }
 
 
+
+
 static void handle_client(int client_fd){
     char request[8192];
         ssize_t n = recv(client_fd, request, sizeof(request)-1, 0);
@@ -136,20 +138,46 @@ static void handle_client(int client_fd){
         ParsedRequest req = {0};
         parse_http_request(request, &req);
 
+
+        // separate path from query
+        char path[1024];
+        char query[2048] = "";
+
+        snprintf(path, sizeof(path), "%s", req.request_line.uri);
+        char *question = strchr(path, '?');
+        if(question != NULL){
+            *question = '\0';
+            snprintf(query, sizeof(query), "%s", question+1);
+        }
+
         const char* status = "200 OK";
-        const char* body;
+        char body[2048] = "";
+
+        char arg[1024] = "";
+        const char *arg_name = NULL;
 
         //Find and call handler
         if(strcmp(req.request_line.method, "GET") != 0){
             status = "404 Not Found";
-            body = "Not Found";
+            snprintf(body, sizeof(body), "Method not allowed");
         }else{
-            int id = find_route(req.request_line.uri);
+            int id = find_route(path);
+
             if(id == -1){
-                status = "404 Not Found";
-                body = "Not Found";
+                status = "404 Not Found!";
+                snprintf(body, sizeof(body), "Not Found!");
             }else{
-                body = functions[id]();
+                if (id == URL_SQUARE || id == URL_CUBE)
+                    arg_name = "num";
+                else if (id == URL_HELLOWORLD)
+                    arg_name = "str";
+
+                if(arg_name != NULL && !get_arguement(query, arg_name, arg, sizeof(arg))){
+                    status = "400 Bad Request!";
+                    snprintf(body, sizeof(body), "Missing argument: %s", arg_name);
+                }else{
+                    functions[id](arg, body, sizeof(body));
+                }
             }
         }
 
