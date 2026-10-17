@@ -156,7 +156,7 @@ static void handle_client(int client_fd){
         char body[2048] = "";
 
         char arg[1024] = "";
-        const char *arg_name = NULL;
+        const char *arg_name = "\0";
 
         //Find and call handler
         if(strcmp(req.request_line.method, "GET") != 0 && strcmp(req.request_line.method, "POST") !=0){
@@ -171,7 +171,7 @@ static void handle_client(int client_fd){
             }else{
                 if (id == URL_SQUARE || id == URL_CUBE || id == URL_FIBONACCI || id == URL_PRIME)
                     arg_name = "num";
-                else if (id == URL_HELLOWORLD)
+                else if (id == URL_HELLOWORLD || id == URL_PINGPONG)
                     arg_name = "str";
 
                 const char* args = query;
@@ -180,12 +180,8 @@ static void handle_client(int client_fd){
                     args = req.body?req.body:"";
                 }
 
-                if(arg_name != NULL && !get_arguement(args, arg_name, arg, sizeof(arg))){
-                    status = "400 Bad Request!";
-                    snprintf(body, sizeof(body), "Missing argument: %s", arg_name);
-                }else{
-                    functions[id](arg, body, sizeof(body));
-                }
+                get_arguement(args, arg_name, arg, sizeof(arg));
+                functions[id](arg, body, sizeof(body));
             }
         }
 
