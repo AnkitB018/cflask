@@ -1,5 +1,8 @@
 .DS_Store
 flask_exp/
-./cs744-autumn2026-lab4.pdf
+cs744-autumn2026-lab4.pdf
 bin/
 .ipynb_checkpoints/
+*.pages
+*.docx
+*.tar.gz
