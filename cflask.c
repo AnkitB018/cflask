@@ -69,7 +69,9 @@ static const Route routes[] = {
     {"/square", URL_SQUARE},
     {"/cube", URL_CUBE},
     {"/helloworld", URL_HELLOWORLD},
-    {"/pingpong", URL_PINGPONG}
+    {"/pingpong", URL_PINGPONG},
+    {"/arithmetic/prime", URL_PRIME},
+    {"/arithmetic/fibonacci", URL_FIBONACCI}
 };
 
 #define ROUTE_COUNT (sizeof(routes) / sizeof(routes[0]))
@@ -167,7 +169,7 @@ static void handle_client(int client_fd){
                 status = "404 Not Found!";
                 snprintf(body, sizeof(body), "Not Found!");
             }else{
-                if (id == URL_SQUARE || id == URL_CUBE)
+                if (id == URL_SQUARE || id == URL_CUBE || id == URL_FIBONACCI || id == URL_PRIME)
                     arg_name = "num";
                 else if (id == URL_HELLOWORLD)
                     arg_name = "str";
