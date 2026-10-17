@@ -157,8 +157,8 @@ static void handle_client(int client_fd){
         const char *arg_name = NULL;
 
         //Find and call handler
-        if(strcmp(req.request_line.method, "GET") != 0){
-            status = "404 Not Found";
+        if(strcmp(req.request_line.method, "GET") != 0 && strcmp(req.request_line.method, "POST") !=0){
+            status = "405 Method Not Allowed";
             snprintf(body, sizeof(body), "Method not allowed");
         }else{
             int id = find_route(path);
@@ -172,7 +172,13 @@ static void handle_client(int client_fd){
                 else if (id == URL_HELLOWORLD)
                     arg_name = "str";
 
-                if(arg_name != NULL && !get_arguement(query, arg_name, arg, sizeof(arg))){
+                const char* args = query;
+                if(strcmp(req.request_line.method, "POST") == 0){
+                    //Get to the body of request
+                    args = req.body?req.body:"";
+                }
+
+                if(arg_name != NULL && !get_arguement(args, arg_name, arg, sizeof(arg))){
                     status = "400 Bad Request!";
                     snprintf(body, sizeof(body), "Missing argument: %s", arg_name);
                 }else{
