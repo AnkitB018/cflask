@@ -1,0 +1,513 @@
+cflask load test results
+Date: Saturday 17 October 2026 07:37:55 PM IST
+Server mode: sequential (s) -- expected to be running separately
+Server CPU affinity: manually set to CPUs 0-2
+wrk CPU affinity: 4-7
+wrk threads: 1
+Duration per test: 30s
+Connection counts: 1 2 4 8 16 32 64 128
+
+Each test records the complete wrk report.
+============================================================
+
+############################################################
+FUNCTION: square
+URL: http://127.0.0.1:8080/square?num=3
+############################################################
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 1
+Command: taskset -c 4-7 ./wrk -t 1 -c 1 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   315.99us  353.26us   6.76ms   92.42%
+    Req/Sec     2.31k   200.66     2.69k    77.33%
+  Latency Distribution
+     50%  210.00us
+     75%  238.00us
+     90%  494.00us
+     99%    2.02ms
+  69051 requests in 30.02s, 5.53MB read
+Requests/sec:   2300.48
+Transfer/sec:    188.71KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 2
+Command: taskset -c 4-7 ./wrk -t 1 -c 2 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 2 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   378.66us  297.11us   7.18ms   92.13%
+    Req/Sec     3.66k   144.26     3.94k    68.67%
+  Latency Distribution
+     50%  310.00us
+     75%  348.00us
+     90%  545.00us
+     99%    1.73ms
+  109269 requests in 30.00s, 8.75MB read
+Requests/sec:   3642.02
+Transfer/sec:    298.76KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 4
+Command: taskset -c 4-7 ./wrk -t 1 -c 4 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   385.68us  374.49us   8.07ms   92.52%
+    Req/Sec     6.60k   340.91     7.33k    71.00%
+  Latency Distribution
+     50%  304.00us
+     75%  414.00us
+     90%  641.00us
+     99%    2.04ms
+  196964 requests in 30.01s, 15.78MB read
+Requests/sec:   6564.31
+Transfer/sec:    538.48KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 8
+Command: taskset -c 4-7 ./wrk -t 1 -c 8 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 8 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   549.15us  444.60us  11.40ms   90.75%
+    Req/Sec     8.54k   420.83     9.56k    69.67%
+  Latency Distribution
+     50%  460.00us
+     75%  663.00us
+     90%    0.93ms
+     99%    2.36ms
+  255105 requests in 30.00s, 20.44MB read
+Requests/sec:   8503.23
+Transfer/sec:    697.53KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 16
+Command: taskset -c 4-7 ./wrk -t 1 -c 16 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.67ms   21.47ms 832.35ms   99.67%
+    Req/Sec     9.06k   407.95    10.13k    68.67%
+  Latency Distribution
+     50%  602.00us
+     75%  843.00us
+     90%    1.12ms
+     99%    2.89ms
+  270727 requests in 30.01s, 21.69MB read
+Requests/sec:   9020.48
+Transfer/sec:    739.96KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 32
+Command: taskset -c 4-7 ./wrk -t 1 -c 32 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 32 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     9.95ms   81.51ms   1.67s    97.96%
+    Req/Sec     9.03k   807.06     9.99k    94.24%
+  Latency Distribution
+     50%  609.00us
+     75%    0.86ms
+     90%    1.20ms
+     99%  334.02ms
+  265737 requests in 30.04s, 21.29MB read
+Requests/sec:   8846.98
+Transfer/sec:    725.73KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 64
+Command: taskset -c 4-7 ./wrk -t 1 -c 64 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     6.26ms   58.50ms   1.70s    98.51%
+    Req/Sec     8.97k     0.92k    9.95k    97.27%
+  Latency Distribution
+     50%  607.00us
+     75%    0.86ms
+     90%    1.17ms
+     99%  172.27ms
+  261812 requests in 30.03s, 20.97MB read
+  Socket errors: connect 0, read 0, write 0, timeout 15
+Requests/sec:   8718.66
+Transfer/sec:    715.20KB
+
+
+------------------------------------------------------------
+Function: square
+Connections (-c): 128
+Command: taskset -c 4-7 ./wrk -t 1 -c 128 -d 30s --latency "http://127.0.0.1:8080/square?num=3"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/square?num=3
+  1 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     5.04ms   50.97ms   1.66s    98.63%
+    Req/Sec     8.95k   675.89    10.19k    89.83%
+  Latency Distribution
+     50%  606.00us
+     75%    0.85ms
+     90%    1.17ms
+     99%  134.06ms
+  262840 requests in 30.04s, 21.06MB read
+  Socket errors: connect 0, read 0, write 0, timeout 25
+Requests/sec:   8749.93
+Transfer/sec:    717.77KB
+
+
+############################################################
+FUNCTION: helloworld
+URL: http://127.0.0.1:8080/helloworld?str=Ashwin
+############################################################
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 1
+Command: taskset -c 4-7 ./wrk -t 1 -c 1 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   293.63us  300.31us   5.33ms   93.11%
+    Req/Sec     2.36k   206.33     2.71k    87.29%
+  Latency Distribution
+     50%  209.00us
+     75%  231.00us
+     90%  421.00us
+     99%    1.74ms
+  68610 requests in 30.07s, 6.28MB read
+Requests/sec:   2281.68
+Transfer/sec:    213.91KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 2
+Command: taskset -c 4-7 ./wrk -t 1 -c 2 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 2 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   386.97us  333.51us   9.01ms   92.37%
+    Req/Sec     3.65k   176.90     4.02k    76.33%
+  Latency Distribution
+     50%  309.00us
+     75%  349.00us
+     90%  560.00us
+     99%    1.86ms
+  108887 requests in 30.00s, 9.97MB read
+Requests/sec:   3629.51
+Transfer/sec:    340.27KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 4
+Command: taskset -c 4-7 ./wrk -t 1 -c 4 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   392.42us  432.51us  15.32ms   93.16%
+    Req/Sec     6.59k   347.12     7.41k    71.67%
+  Latency Distribution
+     50%  303.00us
+     75%  414.00us
+     90%  645.00us
+     99%    2.10ms
+  196909 requests in 30.01s, 18.03MB read
+Requests/sec:   6561.47
+Transfer/sec:    615.14KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 8
+Command: taskset -c 4-7 ./wrk -t 1 -c 8 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 8 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   559.16us  460.68us  10.06ms   90.90%
+    Req/Sec     8.47k   377.17     9.61k    71.33%
+  Latency Distribution
+     50%  464.00us
+     75%  668.00us
+     90%    0.95ms
+     99%    2.48ms
+  252960 requests in 30.01s, 23.16MB read
+Requests/sec:   8429.62
+Transfer/sec:    790.28KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 16
+Command: taskset -c 4-7 ./wrk -t 1 -c 16 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.18ms    9.82ms 420.65ms   99.62%
+    Req/Sec     9.17k   375.60    10.09k    70.67%
+  Latency Distribution
+     50%  600.00us
+     75%  843.00us
+     90%    1.12ms
+     99%    2.77ms
+  273762 requests in 30.01s, 25.06MB read
+Requests/sec:   9121.98
+Transfer/sec:    855.19KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 32
+Command: taskset -c 4-7 ./wrk -t 1 -c 32 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 32 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     7.18ms   66.18ms   1.66s    98.28%
+    Req/Sec     9.00k   436.63    10.01k    73.67%
+  Latency Distribution
+     50%  610.00us
+     75%    0.86ms
+     90%    1.20ms
+     99%  193.15ms
+  268877 requests in 30.01s, 24.62MB read
+Requests/sec:   8959.54
+Transfer/sec:    839.96KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 64
+Command: taskset -c 4-7 ./wrk -t 1 -c 64 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     8.03ms   81.02ms   1.70s    98.61%
+    Req/Sec     9.09k   373.79     9.92k    68.67%
+  Latency Distribution
+     50%  609.00us
+     75%    0.86ms
+     90%    1.17ms
+     99%  170.40ms
+  271369 requests in 30.00s, 24.84MB read
+  Socket errors: connect 0, read 0, write 0, timeout 9
+Requests/sec:   9044.88
+Transfer/sec:    847.96KB
+
+
+------------------------------------------------------------
+Function: helloworld
+Connections (-c): 128
+Command: taskset -c 4-7 ./wrk -t 1 -c 128 -d 30s --latency "http://127.0.0.1:8080/helloworld?str=Ashwin"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/helloworld?str=Ashwin
+  1 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.28ms   28.91ms   1.66s    99.41%
+    Req/Sec     8.98k     0.87k    9.95k    93.86%
+  Latency Distribution
+     50%  600.00us
+     75%  845.00us
+     90%    1.12ms
+     99%    3.08ms
+  262697 requests in 30.05s, 24.05MB read
+  Socket errors: connect 0, read 0, write 0, timeout 14
+Requests/sec:   8743.20
+Transfer/sec:    819.68KB
+
+
+############################################################
+FUNCTION: prime
+URL: http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+############################################################
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 1
+Command: taskset -c 4-7 ./wrk -t 1 -c 1 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   382.76us  242.16us   4.69ms   93.08%
+    Req/Sec     1.92k    79.75     2.10k    70.67%
+  Latency Distribution
+     50%  307.00us
+     75%  351.00us
+     90%  510.00us
+     99%    1.58ms
+  57451 requests in 30.01s, 4.77MB read
+Requests/sec:   1914.16
+Transfer/sec:    162.63KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 2
+Command: taskset -c 4-7 ./wrk -t 1 -c 2 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 2 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   521.15us  371.85us   9.51ms   91.70%
+    Req/Sec     3.44k   165.53     3.81k    68.33%
+  Latency Distribution
+     50%  429.00us
+     75%  533.00us
+     90%  784.00us
+     99%    2.10ms
+  102868 requests in 30.02s, 8.53MB read
+Requests/sec:   3427.12
+Transfer/sec:    291.17KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 4
+Command: taskset -c 4-7 ./wrk -t 1 -c 4 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     0.99ms  492.62us  14.27ms   87.77%
+    Req/Sec     3.81k   181.35     4.22k    69.33%
+  Latency Distribution
+     50%    0.89ms
+     75%    1.04ms
+     90%    1.46ms
+     99%    2.91ms
+  113818 requests in 30.01s, 9.44MB read
+Requests/sec:   3792.89
+Transfer/sec:    322.25KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 8
+Command: taskset -c 4-7 ./wrk -t 1 -c 8 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 8 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.03ms  658.81us  13.09ms   83.39%
+    Req/Sec     3.81k   172.90     4.18k    72.67%
+  Latency Distribution
+     50%    1.87ms
+     75%    2.16ms
+     90%    2.80ms
+     99%    4.35ms
+  113790 requests in 30.01s, 9.44MB read
+Requests/sec:   3792.18
+Transfer/sec:    322.19KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 16
+Command: taskset -c 4-7 ./wrk -t 1 -c 16 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.93ms   22.15ms 839.15ms   99.55%
+    Req/Sec     3.84k   164.44     4.21k    72.33%
+  Latency Distribution
+     50%    2.63ms
+     75%    3.02ms
+     90%    3.70ms
+     99%    5.72ms
+  114638 requests in 30.01s, 9.51MB read
+Requests/sec:   3820.35
+Transfer/sec:    324.58KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 32
+Command: taskset -c 4-7 ./wrk -t 1 -c 32 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 32 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    18.21ms  106.01ms   1.69s    97.01%
+    Req/Sec     3.64k   732.65     4.29k    93.17%
+  Latency Distribution
+     50%    2.65ms
+     75%    3.11ms
+     90%    4.00ms
+     99%  543.17ms
+  59469 requests in 30.07s, 4.93MB read
+  Socket errors: connect 0, read 0, write 0, timeout 31
+Requests/sec:   1977.44
+Transfer/sec:    168.01KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 64
+Command: taskset -c 4-7 ./wrk -t 1 -c 64 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    11.69ms   80.40ms   1.69s    98.17%
+    Req/Sec     3.49k     1.03k    4.20k    88.07%
+  Latency Distribution
+     50%    2.62ms
+     75%    3.03ms
+     90%    3.74ms
+     99%  345.70ms
+  38920 requests in 30.09s, 3.23MB read
+  Socket errors: connect 0, read 0, write 0, timeout 29
+Requests/sec:   1293.27
+Transfer/sec:    109.88KB
+
+
+------------------------------------------------------------
+Function: prime
+Connections (-c): 128
+Command: taskset -c 4-7 ./wrk -t 1 -c 128 -d 30s --latency "http://127.0.0.1:8080/arithmetic/prime?num=1000000007"
+------------------------------------------------------------
+Running 30s test @ http://127.0.0.1:8080/arithmetic/prime?num=1000000007
+  1 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     5.61ms   40.47ms   1.66s    99.13%
+    Req/Sec     3.71k   737.20     4.26k    95.13%
+  Latency Distribution
+     50%    2.61ms
+     75%    2.98ms
+     90%    3.68ms
+     99%    7.10ms
+  84109 requests in 30.06s, 6.98MB read
+  Socket errors: connect 0, read 0, write 0, timeout 24
+Requests/sec:   2798.46
+Transfer/sec:    237.76KB
+
